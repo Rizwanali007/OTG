@@ -1,14 +1,96 @@
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import React from 'react'
+import auth from '@react-native-firebase/auth'
+import { GetCurrentUserDataAPI, getUserData, writeUserData } from '../api/api';
+import { showToast, validateUserEmail } from '../helpers/util';
+import CustomActivityIndicator from '../helpers/activityIndicator';
 import screenNames from '../helpers/screenNames'
 
 const Login = ({ navigation }) => {
+    // useEffect(() => {
+    //     SplashScreen.hide()
+
+    // }, [])
+
+
+    const [isAgree, setisAgree] = useState(true)
+    const [isSecure, setisSecure] = useState(true)
+    const [Password, setPassword] = useState('')
+    const [eMail, setEMail] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+    const bottomRef = useRef();
+
+    const loginEmailAndPassword = async () => {
+
+        auth().signInWithEmailAndPassword(eMail.trim(), Password)
+            .then(async (user) => {
+                console.log('>>>  user ', user);
+
+                await GetCurrentUserDataAPI()
+                let userData = await getUserData()
+                if (userData && userData._data && userData._data.email) {
+
+                } else {
+                    await writeUserData({ email: eMail })
+                }
+                userData = userData._data
+                setIsLoading(false)
+                console.log('>>> userData ', userData);
+                if (userData.type === 'User') {
+                    navigation.navigate(ScreenNames.Dashboard)
+                }
+                else {
+
+                    navigation.navigate(ScreenNames.Rider)
+                }
+
+            })
+            .catch(error => {
+                setIsLoading(false)
+                console.log('>>> error login ', error);
+                if (error.code === 'auth/user-not-found') {
+                    showToast('That email address does not exists!')
+                }
+                else if (error.code === 'auth/wrong-password') {
+                    showToast('Wrong Password!')
+                }
+                else if (error.code === 'auth/network-request-failed') {
+                    showToast('Network Error')
+                }
+
+            });
+    }
+
+
+
+
+    const btnActionSignIn = () => {
+        console.log('>>> Sign In click ', eMail);
+        if (eMail === '') {
+            showToast('Email is required!')
+        }
+        else if (!validateUserEmail(eMail.trim())) {
+            showToast('Enter Valid Email!')
+        }
+        else if (Password === '') {
+            showToast('Password is required!')
+        }
+        else if (Password.length < 8) {
+            showToast('Password should be at least 8 characters ')
+        }
+        else {
+            setIsLoading(true)
+            loginEmailAndPassword()
+        }
+    }
+
+
     return (
         <View style={{ flex: 1, paddingHorizontal: 20, backgroundColor: '#eee', marginTop: 20, }}>
-            {/* <CustomActivityIndicator
-        isLoading={isLoading}
-    /> */}
+            <CustomActivityIndicator
+                isLoading={isLoading}
+            />
             <Image
                 source={require('../../assets/Images/Logo.jpg')}
                 style={{
@@ -40,7 +122,7 @@ const Login = ({ navigation }) => {
                         <TextInput
 
                             placeholder='Email'
-                            // value={eMail}
+                            value={eMail}
                             style={{ width: '98%', borderWidth: 1, borderRadius: 10, marginTop: 10, paddingStart: 20, height: 50, }}
                             onChangeText={(text) => setEMail(text)}
                         />
@@ -54,9 +136,9 @@ const Login = ({ navigation }) => {
                         <TextInput
                             placeholder='**********'
                             secureTextEntry={true}
-                            // value={Password}
+                            value={Password}
                             style={{ width: '98%', borderWidth: 1, borderRadius: 10, marginTop: 10, paddingStart: 20 }}
-                        // onChangeText={(text) => setPassword(text)}
+                            onChangeText={(text) => setPassword(text)}
                         />
                         <Icon name="lock" size={30} style={{ color: 'black', marginLeft: 320, marginTop: -40, }} />
                     </View>
@@ -64,7 +146,7 @@ const Login = ({ navigation }) => {
                     <TouchableOpacity
                         style={{ width: '98%', borderWidth: 1, paddingHorizontal: 20, borderRadius: 10, marginTop: 40, paddingStart: 10, backgroundColor: 'black', marginLeft: 10, }}
                         onPress={() => {
-                            // btnActionSignIn()
+                            btnActionSignIn()
                             navigation.navigate(screenNames.Home)
                         }}
 

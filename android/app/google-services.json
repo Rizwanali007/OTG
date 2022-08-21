@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "875507770577",
+    "project_id": "fypotg",
+    "storage_bucket": "fypotg.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875507770577:android:b3942080d51a484f6a51f0",
+        "android_client_info": {
+          "package_name": "com.otg_fyp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875507770577-c6ef6v42jh2219k8f3ri5vqlfk7ge516.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.otg_fyp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "875507770577-isn52fbu48hpp9ft1ebbuq0ag0njdtqr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1tAwB2YlGhhhnteI4k2iF-CgxKSqDEx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875507770577-isn52fbu48hpp9ft1ebbuq0ag0njdtqr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
